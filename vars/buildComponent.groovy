@@ -32,9 +32,9 @@ void defaultComponentBuild(Map params = null) {
     stage("Init") {
        println "this is the Init stage";
     }
-    stage("Maven") {
-          container('maven'){
-             sh 'mvn -version'
-          }
+    stage("Maven stage") {
+        container('maven') {
+          sh 'mvn -version'
+        }
     }
 }
