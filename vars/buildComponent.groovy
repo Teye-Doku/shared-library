@@ -14,7 +14,7 @@
        }
   }
 void generateJenkinsNode(Map params= null, Closure body = null) {
-    node {
+    node(POD_LABEL) {
         try {
             if(!body){
               defaultComponentBuild(params);

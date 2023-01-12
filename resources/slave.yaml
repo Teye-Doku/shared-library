@@ -11,6 +11,10 @@ spec:
     image: "maven:alpine"
     name: "maven"
     tty: true
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
   - env:
     - name: "JENKINS_WEB_SOCKET"
       value: "true"
