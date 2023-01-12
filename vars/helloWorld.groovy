@@ -1,5 +1,5 @@
- node {
-    def call(){
-       sh "echo Hello World"
-    }
- }
+ def call(){ 
+       node {
+        sh "echo Hello World"
+       }
+  }
