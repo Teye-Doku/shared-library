@@ -26,11 +26,9 @@ void generateJenkinsNode(Map params= null, Closure body = null) {
 
 void defaultComponentBuild(Map params = null) {
     stage("Init") {
-       println "this is the it stage";
+       println "this is the Init stage";
     }
     stage("Maven") {
-        container("maven") {
-            sh 'mvn -version'
-        }
+        println " this is the Maven stageß"
     }
 }
