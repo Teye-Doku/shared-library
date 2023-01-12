@@ -2,7 +2,11 @@
        node {
          def cloud = (params?.cloud ? params.cloud : "kubernetes");
          String slaveDefinition = libraryResource("slave.yaml");
-         println " THE SLAVE@@ USED: $slaveDefinition"
+         
+         println """
+         THE SLAVE@@ USED: 
+         $slaveDefinition
+         """
 
          podTemplate(cloud: cloud, yaml: slaveDefinition) {
             generateJenkinsNode(params,body);
@@ -29,6 +33,8 @@ void defaultComponentBuild(Map params = null) {
        println "this is the Init stage";
     }
     stage("Maven") {
-        println " this is the Maven stageß"
+        container("maven"){
+            sh("mvn -version")
+        }
     }
 }
