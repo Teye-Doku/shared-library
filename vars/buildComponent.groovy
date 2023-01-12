@@ -33,8 +33,6 @@ void defaultComponentBuild(Map params = null) {
        println "this is the Init stage";
     }
     stage("Maven") {
-        container('maven') {
           echo "maven"
-        }
     }
 }
