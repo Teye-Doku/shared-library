@@ -2,7 +2,7 @@
        node {
          def cloud = (params?.cloud ? params.cloud : "kubernetes");
          String slaveDefinition = libraryResource("slave.yaml");
-         
+
          println """
          THE SLAVE@@ USED: 
          $slaveDefinition
@@ -33,8 +33,8 @@ void defaultComponentBuild(Map params = null) {
        println "this is the Init stage";
     }
     stage("Maven") {
-        container("maven"){
-            sh("mvn -version")
+        container('maven') {
+          sh 'mvn -version'
         }
     }
 }
