@@ -34,7 +34,7 @@ void defaultComponentBuild(Map params = null) {
     }
     stage("Maven") {
         container('maven') {
-          sh 'mvn -version'
+          echo "maven"
         }
     }
 }
