@@ -1,139 +1,41 @@
-apiVersion: v1
-kind: Pod
+apiVersion: "v1"
+kind: "Pod"
 metadata:
   labels:
-    slave-type: component-build
+    jenkins: "slave"
+  namespace: "jenkins"
 spec:
-  hostAliases:
-    - ip: "192.168.202.254"
-      hostnames:
-        - "forge-jenkins2-external-build.viaccess.fr"
-        - "jenkins2-external-build"
-        - "vo-external-ci-cluster.viaccess.fr"
-    - ip: "192.168.202.250"
-      hostnames:
-        - "forge-git-external.viaccess.fr"
-    - ip: "192.168.202.202"
-      hostnames:
-        - "forge-sonarqube-external.viaccess.fr"
-    - ip: "192.168.202.203"
-      hostnames:
-        - "master-node.viaccess.fr"
-    - ip: "192.168.202.251"
-      hostnames:
-        - "forge-nexus3-external.viaccess.fr"
-    - ip: "192.168.200.96"
-      hostnames:
-        - "vo-jfrog.viaccess.fr"
-        - "demo-docker-local.vo-jfrog.viaccess.fr"
-        - "vo-docker.vo-jfrog.viaccess.fr"
-        - "vo-helm.vo-jfrog.viaccess.fr"
-        - "swf-docker-test.vo-jfrog.viaccess.fr"
-    - ip: "34.253.147.82"
-      hostnames:
-        - "repo.hub.vo.services"
-    - ip: "54.154.113.158"
-      hostnames:
-        - "vorepoeuw1.jfrog.io"
-        
   containers:
-    - name: jnlp
-      image: jenkins/inbound-agent:4.10-3-jdk11
-      resources:
-        requests:
-          cpu: "500m"
-          memory: "1024Mi"
-        limits:
-          cpu: "2000m"
-          memory: "2048Mi"
-      volumeMounts:
-        - name: cerberus
-          mountPath: "/etc/ssl/certs/cerberus.crt" 
-          subPath: cerberus.crt  
-      env:
-      - name: JENKINS_WEB_SOCKET
-        value: true
-      envFrom:
-        - configMapRef:
-            name: ci-vars
-      securityContext:
-        runAsGroup: 0
-        runAsUser: 0
-        privileged: true
-
-    - name: mvn
-      image: 432206584898.dkr.ecr.us-east-1.amazonaws.com/orca_common:maven-3.6-local-jdk-(( javaVersion ))
-      command:
-        - cat
-      tty: true
-      securityContext:
-        privileged: true
-      volumeMounts:
-        - name: leonardo-secrets
-          mountPath: "/root/.m2/settings.xml"
-          subPath: settings.xml
-#        - name: mvn-repo
-#          mountPath: "/opt/.m2"
-#          readOnly: false
-      envFrom:
-        - configMapRef:
-            name: ci-vars
-    - name: dind
-      image: docker:18.09-dind
-      resources:
-        requests:
-          cpu: "500m"
-          ephemeral-storage: "500Mi"
-        limits:
-          cpu: "1000m"
-      securityContext:
-        privileged: true
-      args:
-        - "--mtu=1440"
-      command:
-        - dockerd
-      tty: true
-      volumeMounts:
-        - name: dockerconfig
-          mountPath: /root/.docker/
-    - name: helm
-      image: 432206584898.dkr.ecr.us-east-1.amazonaws.com/orca_common:kubectl-helm3-new
-      imagePullPolicy: Always
-      command:
-        - cat
-      tty: true
-      volumeMounts:
-        - name: cerberus
-          mountPath: /etc/pki/ca-trust/source/anchors/
-    - name: gitlab-ca
-      image: 432206584898.dkr.ecr.us-east-1.amazonaws.com/orca_common:gitlab-ca
-      command:
-        - cat
-      tty: true
-    - name: curl
-      image: appropriate/curl
-      imagePullPolicy: IfNotPresent
-      command:
-        - cat
-      tty: true
-      envFrom:
-        - configMapRef:
-            name: ci-vars
+  - command:
+    - "cat"
+    image: "maven:alpine"
+    name: "maven"
+    tty: true
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  - env:
+    - name: "JENKINS_WEB_SOCKET"
+      value: "true"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    - name: "JENKINS_URL"
+      value: "http://192.168.1.3:8080/"
+    image: "jenkins/inbound-agent:3077.vd69cf116da_6f-3-jdk11"
+    name: "jnlp"
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  nodeSelector:
+    kubernetes.io/os: "linux"
+  restartPolicy: "Never"
   volumes:
-    - name: leonardo-secrets
-      secret:
-        secretName: leonardo-secrets
-    - name: mvn-repo
-      persistentVolumeClaim:
-        claimName: mvn-pv-claim
-    - name: cerberus
-      configMap:
-        name: cerberus
-    - name: dockerconfig
-      projected:
-        sources:
-          - secret:
-              name: us-east-1-ecr-registry
-              items:
-                - key: ".dockerconfigjson"
-                  path: "config.json"
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
