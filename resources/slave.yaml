@@ -20,8 +20,6 @@ spec:
       value: "true"
     - name: "JENKINS_AGENT_WORKDIR"
       value: "/home/jenkins/agent"
-    - name: "JENKINS_URL"
-      value: "http://192.168.1.12:8080/"
     image: "jenkins/inbound-agent:3077.vd69cf116da_6f-3-jdk11"
     name: "jnlp"
     resources:
