@@ -37,7 +37,9 @@ void defaultComponentBuild(Map params = null) {
           sh 'mvn -version'
         }
     }
-    stage("Test"){
-        println " this is the testing stage"
+    stage("Helm Upgrade"){
+        container("helm"){
+            sh 'helm version'
+        }
     }
 }

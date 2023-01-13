@@ -6,6 +6,8 @@ metadata:
   namespace: "jenkins"
 spec:
   containers:
+  - name: helm
+    image: "ibmcom/helm-ppc64le:latest"
   - command:
     - "cat"
     image: "maven:alpine"
