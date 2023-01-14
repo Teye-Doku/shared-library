@@ -5,7 +5,7 @@
        node {
          stage("build stage") {
             sh "echo building"
-            echo "$WORKDIR"
+            echo "$WORKSPACE"
          }
          stage("test stage") {
             sh "echo testing"
