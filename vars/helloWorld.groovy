@@ -1,4 +1,7 @@
  def call(){ 
+       properties([
+          buildDiscarder(logRotator(numToKeepStr: "5")),
+       ])
        node {
          stage("build stage") {
             sh "echo building"
