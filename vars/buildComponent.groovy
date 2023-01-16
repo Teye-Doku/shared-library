@@ -1,4 +1,7 @@
  def call(Map params = null, Closure body = null){ 
+       properties([
+         buildDiscarder(logRotator(numToKeepStr: "5"))
+       ])
        node {
          def cloud = (params?.cloud ? params.cloud : "kubernetes");
          String slaveDefinition = libraryResource("slave.yaml");
