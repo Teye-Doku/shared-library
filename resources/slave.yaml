@@ -20,7 +20,7 @@ spec:
       value: "true"
     - name: "JENKINS_AGENT_WORKDIR"
       value: "/home/jenkins/agent"
-    image: "jenkins/inbound-agent:3077.vd69cf116da_6f-3-jdk11"
+    image: "jenkins/inbound-agent:4.10-3-jdk11" 
     name: "jnlp"
     resources:
       requests:
