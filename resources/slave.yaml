@@ -1,13 +1,39 @@
-apiVersion: v1
-kind: Pod
+apiVersion: "v1"
+kind: "Pod"
 metadata:
   labels:
     jenkins: "slave"
   namespace: "jenkins"
 spec:
   containers:
-  - name: maven
-    image: maven:alpine
-    command:
-    - cat
+  - command:
+    - "cat"
+    image: "maven:alpine"
+    name: "maven"
     tty: true
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  - env:
+    - name: "JENKINS_WEB_SOCKET"
+      value: "true"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    image: "jenkins/inbound-agent:3077.vd69cf116da_6f-3-jdk11"
+    name: "jnlp"
+    resources:
+      requests:
+        memory: "50Mi"
+        cpu: "100m"
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  nodeSelector:
+    kubernetes.io/os: "linux"
+  restartPolicy: "Never"
+  volumes:
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
